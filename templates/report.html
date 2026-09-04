@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="report-container printable">
+    <div class="report-header">
+        <h1>❤️ HeartAI Detailed Compatibility Report</h1>
+        <p class="subtitle">AI Love Compatibility & Relationship Advisor</p>
+        <button onclick="window.print()" class="btn-secondary no-print">Print / Save Report</button>
+    </div>
+
+    <div class="card couple-hero">
+        <h2>{{ relationship.partner_name }} ❤️ {{ session.user_name }}</h2>
+        <div class="main-score">{{ comp.overall_score }}%</div>
+        <div class="score-category">{{ comp.category }}</div>
+    </div>
+
+    <div class="card">
+        <h3>Compatibility Breakdown</h3>
+        <div class="chart-container">
+            <canvas id="compChart"></canvas>
+        </div>
+    </div>
+
+    {% if report %}
+        <div class="card">
+            <h3>Executive Summary</h3>
+            <p>{{ report.summary }}</p>
+        </div>
+
+        <div class="card">
+            <h3>Relationship Strengths</h3>
+            <ul>
+                {% for item in report.strengths %}
+                    <li>{{ item }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="card">
+            <h3>Potential Challenges</h3>
+            <ul>
+                {% for item in report.challenges %}
+                    <li>{{ item }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="card">
+            <h3>Personalized Recommendations</h3>
+            <ol>
+                {% for item in report.recommendations %}
+                    <li>{{ item }}</li>
+                {% endfor %}
+            </ol>
+        </div>
+
+        <div class="card">
+            <h3>Recommended Date Ideas</h3>
+            <div class="date-cards">
+                {% for idea in report.date_ideas %}
+                    <div class="date-card">❤️ {{ idea }}</div>
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+
+    {% if astro_interp %}
+        <div class="card">
+            <h3>Zodiac Interpretation (Entertainment Purpose)</h3>
+            <p>{{ astro_interp }}</p>
+        </div>
+    {% endif %}
+
+    <div class="text-center no-print">
+        <a href="{{ url_for('coach.coach_page') }}" class="btn-primary">Ask AI Advisor Further Questions</a>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    const ctx = document.getElementById('compChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'radar',
+        data: {
+            labels: ['Personality', 'Interests', 'Values', 'Communication', 'Lifestyle', 'Preferences'],
+            datasets: [{
+                label: 'Compatibility Scores',
+                data: [
+                    {{ comp.personality_score }},
+                    {{ comp.interests_score }},
+                    {{ comp.values_score }},
+                    {{ comp.communication_score }},
+                    {{ comp.lifestyle_score }},
+                    {{ comp.preference_score }}
+                ],
+                backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                borderColor: 'rgba(255, 99, 132, 1)',
+                borderWidth: 2
+            }]
+        },
+        options: {
+            scales: {
+                r: { min: 0, max: 100 }
+            }
+        }
+    });
+</script>
+{% endblock %}

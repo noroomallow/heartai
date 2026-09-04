@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0">
+
+<title>
+    {% block title %}
+    HeartAI — AI Love Compatibility & Relationship Advisor
+    {% endblock %}
+</title>
+
+<!-- Main CSS -->
+<link
+    rel="stylesheet"
+    href="{{ url_for('static', filename='css/style.css') }}">
+
+<!-- Authentication CSS -->
+<link
+    rel="stylesheet"
+    href="{{ url_for('static', filename='css/auth.css') }}">
+
+<!-- Dashboard CSS -->
+<link
+    rel="stylesheet"
+    href="{{ url_for('static', filename='css/dashboard.css') }}">
+
+<!-- Report CSS -->
+<link
+    rel="stylesheet"
+    href="{{ url_for('static', filename='css/report.css') }}">
+
+<!-- Responsive CSS -->
+<link
+    rel="stylesheet"
+    href="{{ url_for('static', filename='css/responsive.css') }}">
+
+<!-- Chart.js -->
+<script
+    src="https://cdn.jsdelivr.net/npm/chart.js">
+</script>
+
+
+</head>
+
+<body>
+
+<header class="navbar">
+
+
+<div class="nav-container">
+
+    <!-- Brand -->
+    <a
+        href="{{ url_for('dashboard.index') }}"
+        class="brand-logo">
+        ❤️ HeartAI
+    </a>
+
+
+    <nav class="nav-links">
+
+        {% if session.get('user_id') %}
+
+            <!-- Dashboard -->
+            <a
+                href="{{ url_for('dashboard.index') }}">
+                Dashboard
+            </a>
+
+
+            <!-- Personality -->
+            <a
+                href="{{ url_for('personality.questionnaire') }}">
+                Personality
+            </a>
+
+
+            <!-- Compatibility -->
+            <a
+                href="{{ url_for('compatibility.view_latest') }}">
+                Compatibility
+            </a>
+
+
+            <!-- Astrology -->
+            <a
+                href="{{ url_for('astrology.astrology_view') }}">
+                Astrology
+            </a>
+
+
+            <!-- Chat Analysis -->
+            <a
+                href="{{ url_for('chat.chat_analysis') }}">
+                Chat AI
+            </a>
+
+
+            <!-- 30-Day Plan -->
+            <a
+                href="{{ url_for('progress.plan_view') }}">
+                30-Day Plan
+            </a>
+
+            <!-- Overall Report -->
+            <a
+                href="{{ url_for('assessment.assessment_report') }}">
+                Overall Report
+            </a>
+
+
+            <!-- AI Coach -->
+            <a
+                href="{{ url_for('coach.coach_page') }}">
+                AI Coach
+            </a>
+
+
+            <!-- Logout -->
+            <a
+                href="{{ url_for('auth.logout') }}"
+                class="btn-secondary">
+                Logout
+            </a>
+
+        {% else %}
+
+            <!-- Login -->
+            <a
+                href="{{ url_for('auth.login') }}">
+                Login
+            </a>
+
+
+            <!-- Register -->
+            <a
+                href="{{ url_for('auth.register') }}"
+                class="btn-primary">
+                Get Started
+            </a>
+
+        {% endif %}
+
+    </nav>
+
+</div>
+
+
+</header>
+
+<main class="main-content">
+
+
+<!-- Flash Messages -->
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+
+    {% if messages %}
+
+        <div class="flash-messages">
+
+            {% for category, msg in messages %}
+
+                <div
+                    class="alert alert-{{ category }}">
+
+                    {{ msg }}
+
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    {% endif %}
+
+{% endwith %}
+
+
+<!-- Error Page -->
+
+{% if error_title %}
+
+    <div class="error-container">
+
+        <h2>
+            {{ error_title }}
+        </h2>
+
+        <p>
+            {{ error_msg }}
+        </p>
+
+        <a
+            href="{{ url_for('dashboard.index') }}"
+            class="btn-primary">
+
+            Return Home
+
+        </a>
+
+    </div>
+
+{% else %}
+
+    {% block content %}
+    {% endblock %}
+
+{% endif %}
+
+
+</main>
+
+<footer class="footer">
+
+
+<div class="footer-container">
+
+    <p>
+
+        <strong>
+            Privacy & Safety Notice:
+        </strong>
+
+        HeartAI provides AI-based relationship insights
+        using information voluntarily supplied by users.
+
+        It does not predict the future or guarantee
+        relationship outcomes.
+
+        Astrology analyses are for entertainment
+        and self-reflection.
+
+    </p>
+
+
+    <p>
+
+        &copy; 2026 HeartAI.
+        All rights reserved.
+
+    </p>
+
+</div>
+
+
+</footer>
+
+<!-- Main JavaScript -->
+
+<script
+    src="{{ url_for('static', filename='js/main.js') }}">
+</script>
+
+{% block scripts %}
+{% endblock %}
+
+</body>
+
+</html>

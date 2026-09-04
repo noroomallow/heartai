@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="hero-section">
+    <div class="hero-card">
+        <h1>Understand Your Relationship Better with AI</h1>
+        <p class="subtitle">HeartAI analyzes compatibility, communication, interests, values, and relationship preferences to provide personalized insights and guidance.</p>
+        <div class="hero-actions">
+            <a href="{{ url_for('auth.register') }}" class="btn-primary btn-lg">Start Your Analysis</a>
+            <a href="{{ url_for('auth.login') }}" class="btn-secondary btn-lg">Login</a>
+        </div>
+    </div>
+</section>
+
+<section class="features-grid">
+    <div class="feature-card">
+        <div class="icon">❤️</div>
+        <h3>Compatibility Analysis</h3>
+        <p>Deterministic mathematical scoring across 6 key emotional and lifestyle dimensions.</p>
+    </div>
+    <div class="feature-card">
+        <div class="icon">🧠</div>
+        <h3>Personality Insights</h3>
+        <p>Deep psychological evaluations derived from validated communication surveys.</p>
+    </div>
+    <div class="feature-card">
+        <div class="icon">💬</div>
+        <h3>Communication Analysis</h3>
+        <p>NLP sentiment evaluation to pinpoint tone, patterns, and conversational friction.</p>
+    </div>
+    <div class="feature-card">
+        <div class="icon">🔮</div>
+        <h3>Astrology Insights</h3>
+        <p>Zodiac and natal alignment perspectives kept completely distinct from data scores.</p>
+    </div>
+    <div class="feature-card">
+        <div class="icon">🤖</div>
+        <h3>AI Relationship Advisor</h3>
+        <p>Real-time supportive chat guidance powered by Gemini AI.</p>
+    </div>
+    <div class="feature-card">
+        <div class="icon">🗓️</div>
+        <h3>30-Day Relationship Plan</h3>
+        <p>Tailored daily actionable exercises aimed at bolstering targeted connection areas.</p>
+    </div>
+</section>
+{% endblock %}

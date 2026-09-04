@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container-narrow">
+    <div class="card">
+        <h2>🗓️ Personalized 30-Day Relationship Plan</h2>
+        <p>Complete daily actions designed to strengthen weakest compatibility areas.</p>
+        
+        {% if tasks %}
+            <div class="task-list">
+                {% for task in tasks %}
+                    <div class="task-item {{ 'completed' if task.completed else '' }}" data-task-id="{{ task.id }}">
+                        <input type="checkbox" {{ 'checked' if task.completed else '' }} onchange="toggleTask({{ task.id }}, this)">
+                        <div class="task-details">
+                            <strong>Day {{ task.day_number }} (Week {{ task.week_number }}): {{ task.title }}</strong>
+                            <p>{{ task.description }}</p>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>No active plan found. Scores above 80% default to general maintenance recommendations.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function toggleTask(taskId, cb) {
+    fetch('/api/task/toggle/' + taskId, { method: 'POST' })
+    .then(r => r.json())
+    .then(data => {
+        if(data.success) {
+            cb.closest('.task-item').classList.toggle('completed', data.completed);
+        }
+    });
+}
+</script>
+{% endblock %}

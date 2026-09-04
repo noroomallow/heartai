@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container-narrow">
+    <div class="card text-center">
+        <h2>Compatibility Results for {{ session.user_name }} & {{ relationship.partner_name }}</h2>
+        {% if comp %}
+            <div class="score-display">
+                <span class="score-number">{{ comp.overall_score }}%</span>
+                <span class="badge">{{ comp.category }}</span>
+            </div>
+
+            <div class="dimension-breakdown">
+                <div class="dim-bar">
+                    <span>Personality Alignment</span>
+                    <div class="bar-outer"><div class="bar-inner" style="width: {{ comp.personality_score }}%"></div></div>
+                    <span>{{ comp.personality_score }}%</span>
+                </div>
+                <div class="dim-bar">
+                    <span>Interests Similarity</span>
+                    <div class="bar-outer"><div class="bar-inner" style="width: {{ comp.interests_score }}%"></div></div>
+                    <span>{{ comp.interests_score }}%</span>
+                </div>
+                <div class="dim-bar">
+                    <span>Shared Values</span>
+                    <div class="bar-outer"><div class="bar-inner" style="width: {{ comp.values_score }}%"></div></div>
+                    <span>{{ comp.values_score }}%</span>
+                </div>
+                <div class="dim-bar">
+                    <span>Communication</span>
+                    <div class="bar-outer"><div class="bar-inner" style="width: {{ comp.communication_score }}%"></div></div>
+                    <span>{{ comp.communication_score }}%</span>
+                </div>
+            </div>
+            
+            <a href="{{ url_for('report.view_report', relationship_id=relationship.id) }}" class="btn-primary mt-4">View AI Analysis Report</a>
+        {% else %}
+            <p>No score calculated yet.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

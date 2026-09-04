@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container-narrow">
+    <div class="card coach-box">
+        <h2>🤖 HeartAI Relationship Advisor</h2>
+        <div id="chatWindow" class="chat-window">
+            <div class="msg assistant">
+                Hello! I am your HeartAI relationship advisor. How can I support your connection today?
+            </div>
+        </div>
+        <div class="chat-input-row">
+            <input type="text" id="coachInput" placeholder="Ask a question (e.g., How can we handle disagreements better?)..." onkeypress="if(event.key==='Enter') sendCoachMsg()">
+            <button onclick="sendCoachMsg()" class="btn-primary">Send</button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/coach.js') }}"></script>
+{% endblock %}

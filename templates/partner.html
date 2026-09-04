@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container-narrow">
+    <div class="card">
+        <h2>Partner Personality & Profile Entry</h2>
+        <p>Enter your partner's details to calculate multi-dimensional compatibility.</p>
+        
+        <form method="POST" action="{{ url_for('compatibility.partner') }}">
+            <div class="form-group">
+                <label>Partner's Name</label>
+                <input type="text" name="partner_name" required placeholder="Jordan">
+            </div>
+
+            <div class="form-group">
+                <label>Partner's Date of Birth (Optional - For Astrology)</label>
+                <input type="date" name="partner_bdate">
+            </div>
+
+            <h4>Partner Personality Survey</h4>
+            <div class="form-group">
+                <label>Communication Style (1-5)</label>
+                <input type="range" min="1" max="5" name="p_comm" value="3" class="slider">
+            </div>
+            <div class="form-group">
+                <label>Emotional Openness (1-5)</label>
+                <input type="range" min="1" max="5" name="p_openness" value="3" class="slider">
+            </div>
+            <div class="form-group">
+                <label>Conflict Handling (1-5)</label>
+                <input type="range" min="1" max="5" name="p_conflict" value="3" class="slider">
+            </div>
+            <div class="form-group">
+                <label>Independence Need (1-5)</label>
+                <input type="range" min="1" max="5" name="p_trust" value="3" class="slider">
+            </div>
+            <div class="form-group">
+                <label>Social Preference (1-5)</label>
+                <input type="range" min="1" max="5" name="p_social" value="3" class="slider">
+            </div>
+            <div class="form-group">
+                <label>Relationship Goal Commitment (1-5)</label>
+                <input type="range" min="1" max="5" name="p_expectation" value="3" class="slider">
+            </div>
+            <div class="form-group">
+                <label>Partner Interests</label>
+                <input type="text" name="p_interests" placeholder="reading, travel, fitness">
+            </div>
+            <div class="form-group">
+                <label>Partner Lifestyle & Goals</label>
+                <textarea name="p_lifestyle" rows="2" placeholder="Night owl, family-oriented..."></textarea>
+            </div>
+
+            <button type="submit" class="btn-primary btn-block">Run Compatibility Analysis ❤️</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

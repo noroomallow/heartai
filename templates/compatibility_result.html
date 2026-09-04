@@ -1,0 +1,263 @@
+
+{% extends "base.html" %}
+
+{% block title %}
+HeartAI — Compatibility Result
+{% endblock %}
+
+{% block content %}
+
+<div class="compatibility-result">
+
+    <div class="result-header">
+
+        <div class="heart-icon">
+            ❤️
+        </div>
+
+        <h1>Your Relationship Compatibility</h1>
+
+        <p>
+            Your answers were compared with your partner's answers.
+        </p>
+
+    </div>
+
+
+    <!-- Overall Score -->
+
+    <div class="score-card">
+
+        <div class="score-circle">
+
+            <span>
+                {{ result.overall_score }}%
+            </span>
+
+        </div>
+
+        <h2>
+            {{ result.category }}
+        </h2>
+
+        <p>
+            {{ result.direction }}
+        </p>
+
+    </div>
+
+
+    <!-- Summary -->
+
+    <div class="summary-grid">
+
+        <div class="summary-card">
+
+            <div class="summary-icon">
+                🧩
+            </div>
+
+            <h3>
+                Common Areas
+            </h3>
+
+            <strong>
+                {{ result.common_count }}
+            </strong>
+
+            <p>
+                areas where your answers are closely aligned.
+            </p>
+
+        </div>
+
+
+        <div class="summary-card">
+
+            <div class="summary-icon">
+                ⚡
+            </div>
+
+            <h3>
+                Different Areas
+            </h3>
+
+            <strong>
+                {{ result.difference_count }}
+            </strong>
+
+            <p>
+                areas where your preferences are different.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- Common Things -->
+
+    <section class="result-section">
+
+        <h2>
+            🧩 What You Both Have in Common
+        </h2>
+
+        <p>
+            These are areas where your answers are similar.
+        </p>
+
+
+        {% if result.common %}
+
+        <div class="comparison-list">
+
+            {% for item in result.common %}
+
+            <div class="comparison-card">
+
+                <h3>
+                    {{ item.question }}
+                </h3>
+
+                <div class="comparison-values">
+
+                    <div>
+                        <span>You</span>
+                        <strong>
+                            {{ item.you }}/5
+                        </strong>
+                    </div>
+
+                    <div class="match">
+                        🟢 {{ item.match }}% Match
+                    </div>
+
+                    <div>
+                        <span>Partner</span>
+                        <strong>
+                            {{ item.partner }}/5
+                        </strong>
+                    </div>
+
+                </div>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+        {% else %}
+
+        <p>
+            Your answers show different preferences in these areas.
+        </p>
+
+        {% endif %}
+
+    </section>
+
+
+    <!-- Differences -->
+
+    <section class="result-section">
+
+        <h2>
+            ⚡ Where You Are Different
+        </h2>
+
+        <p>
+            Differences do not automatically mean incompatibility.
+            They show areas where communication may help.
+        </p>
+
+
+        {% if result.differences %}
+
+        <div class="comparison-list">
+
+            {% for item in result.differences %}
+
+            <div class="comparison-card difference-card">
+
+                <h3>
+                    {{ item.question }}
+                </h3>
+
+                <div class="comparison-values">
+
+                    <div>
+                        <span>You</span>
+                        <strong>
+                            {{ item.you }}/5
+                        </strong>
+                    </div>
+
+                    <div class="match">
+                        🟡 {{ item.match }}% Match
+                    </div>
+
+                    <div>
+                        <span>Partner</span>
+                        <strong>
+                            {{ item.partner }}/5
+                        </strong>
+                    </div>
+
+                </div>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+        {% endif %}
+
+    </section>
+
+
+    <!-- Same Path -->
+
+    <section class="path-card">
+
+        <h2>
+            🛤️ Are You Walking the Same Path?
+        </h2>
+
+        <p>
+            {{ result.direction }}
+        </p>
+
+        <p>
+            Your compatibility score represents similarity
+            between the answers you provided. It is not a
+            prediction or guarantee about your relationship.
+        </p>
+
+    </section>
+
+
+    <div class="result-actions">
+
+        <a
+            href="{{ url_for('compatibility.compatibility_test') }}"
+            class="btn-primary"
+        >
+            🔄 Retake Test
+        </a>
+
+        <a
+            href="{{ url_for('dashboard.index') }}"
+            class="btn-secondary"
+        >
+            ← Dashboard
+        </a>
+
+    </div>
+
+</div>
+
+{% endblock %}
+

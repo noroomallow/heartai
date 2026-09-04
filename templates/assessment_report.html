@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+{% block title %}HeartAI Professional Relationship Report{% endblock %}
+{% block content %}
+<div class="container-narrow report-page">
+    <div class="report-hero card">
+        <div>
+            <p class="eyebrow">HEARTAI • PROFESSIONAL RELATIONSHIP REPORT</p>
+            <h1>{{ user.name }} ❤️ {{ relationship.partner_name if relationship else 'Partner' }}</h1>
+            <p>AI Love Compatibility & Relationship Advisor</p>
+        </div>
+        <div class="report-score">
+            <span>{{ "%.1f"|format(assessment.overall_score) }}%</span>
+            <small>{{ assessment.category }}</small>
+        </div>
+        <div class="report-actions no-print">
+            <a class="btn-primary" href="{{ url_for('assessment.assessment_report_pdf') }}">Generate Professional PDF</a>
+            <a class="btn-secondary" href="{{ url_for('progress.plan_view') }}">View 30-Day Plan</a>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>1. Overall Score & Tests</h2>
+        <p>{{ assessment.tests_completed }} assessment(s) completed. Only completed assessments are used in the normalized overall score.</p>
+        <div class="metrics-grid">
+            <div class="card"><h3>Personality</h3><div class="score-badge">{{ "%.1f"|format(assessment.personality_score) }}%</div></div>
+            <div class="card"><h3>Compatibility</h3><div class="score-badge">{{ "%.1f"|format(assessment.compatibility_score) }}%</div></div>
+            <div class="card"><h3>Chat AI</h3><div class="score-badge">{{ "%.1f"|format(assessment.chat_score) }}%</div></div>
+        </div>
+    </div>
+
+    {% if personality %}
+    <div class="card">
+        <h2>2. Personality Profile</h2>
+        <p><strong>Type:</strong> {{ personality.personality_type or 'Relationship Profile' }} · <strong>Overall:</strong> {{ "%.1f"|format(personality.overall_score or 0) }}%</p>
+        <div class="report-grid">
+            <span>Communication {{ "%.0f"|format(personality.communication_style or 0) }}%</span>
+            <span>Emotional openness {{ "%.0f"|format(personality.emotional_openness or 0) }}%</span>
+            <span>Conflict handling {{ "%.0f"|format(personality.conflict_style or 0) }}%</span>
+            <span>Trust {{ "%.0f"|format(personality.trust_level or 0) }}%</span>
+            <span>Social preference {{ "%.0f"|format(personality.social_preference or 0) }}%</span>
+            <span>Expectations {{ "%.0f"|format(personality.relationship_expectation or 0) }}%</span>
+        </div>
+    </div>
+    {% endif %}
+
+    {% if compatibility %}
+    <div class="card">
+        <h2>3. Compatibility Assessment</h2>
+        <p><strong>{{ "%.1f"|format(compatibility.overall_score) }}%</strong> · {{ compatibility.category }}</p>
+        <div class="report-grid">
+            <span>Personality {{ "%.0f"|format(compatibility.personality_score or 0) }}%</span>
+            <span>Interests {{ "%.0f"|format(compatibility.interests_score or 0) }}%</span>
+            <span>Values {{ "%.0f"|format(compatibility.values_score or 0) }}%</span>
+            <span>Communication {{ "%.0f"|format(compatibility.communication_score or 0) }}%</span>
+            <span>Lifestyle {{ "%.0f"|format(compatibility.lifestyle_score or 0) }}%</span>
+            <span>Preferences {{ "%.0f"|format(compatibility.preference_score or 0) }}%</span>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="card">
+        <h2>4. Astrology</h2>
+        <p class="notice">Astrology-based interpretation is for entertainment and personal reflection. It is not scientifically predictive and is separate from the main compatibility score.</p>
+        {% if astrology %}
+            <p><strong>{{ astrology.person1_name }}</strong>{% if astrology.person2_name %} ❤️ <strong>{{ astrology.person2_name }}</strong>{% endif %}</p>
+            {% set astro_combined = astrology.get_combined_data() %}
+            {% if astro_combined %}<p>{{ astro_combined.get('summary') or astro_combined.get('interpretation') or astro_combined.get('relationship') or '' }}</p>{% endif %}
+        {% else %}
+            <p>No astrology reading has been saved.</p>
+        {% endif %}
+    </div>
+
+    {% if plan %}
+    <div class="card">
+        <h2>5. 30-Day Relationship Bonding Plan</h2>
+        <p>Initial score {{ "%.1f"|format(plan.initial_score) }}% → target {{ "%.1f"|format(plan.target_score) }}%. Activities include dating, movie night, cooking, style/outfit shopping, surprises, hobbies, walks, memories and future planning.</p>
+        <div class="plan-preview">
+        {% for task in tasks %}
+            <div class="plan-row {{ 'completed' if task.completed else '' }}"><div class="day-pill">{{ task.day_number }}</div><div><strong>{{ task.title }}</strong><p>{{ task.description }}</p></div></div>
+        {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="card">
+        <h2>6. All Chat AI Analyses</h2>
+        {% if chats %}
+            {% for chat in chats %}
+            <div class="history-item">
+                <strong>Chat #{{ loop.index }}</strong> · {{ chat.created_at.strftime('%d %b %Y, %I:%M %p') if chat.created_at else '' }}
+                <p>Messages: {{ chat.total_messages or 0 }} · Communication {{ "%.0f"|format(chat.communication_score or 0) }}% · Emotional {{ "%.0f"|format(chat.emotional_score or 0) }}% · Trust {{ "%.0f"|format(chat.trust_score or 0) }}% · Tone {{ chat.emotional_tone or 'Neutral' }}</p>
+                {% if chat.ai_summary %}<p>{{ chat.ai_summary }}</p>{% endif %}
+            </div>
+            {% endfor %}
+        {% else %}<p>No chat analyses recorded.</p>{% endif %}
+    </div>
+
+    <div class="card">
+        <h2>7. AI Relationship Coach</h2>
+        {% if coach_history %}
+            {% for item in coach_history %}
+            <div class="history-item"><strong>{{ item.created_at.strftime('%d %b %Y, %I:%M %p') if item.created_at else '' }}</strong><p><b>You:</b> {{ item.user_message }}</p><p><b>AI Coach:</b> {{ item.ai_reply }}</p></div>
+            {% endfor %}
+        {% else %}<p>No saved coach conversations yet.</p>{% endif %}
+        <a class="btn-primary no-print" href="{{ url_for('coach.coach_page') }}">Open AI Coach</a>
+    </div>
+
+    <div class="card ai-final-section">
+        <h2>8. Final AI Relationship Report</h2>
+        <p class="notice">This final section is generated from the available HeartAI assessment context and is intended for reflection and practical relationship planning.</p>
+        <h3>Overall Summary</h3><p>{{ ai_content.summary }}</p>
+        <h3>Compatibility Explanation</h3><p>{{ ai_content.compatibility_explanation }}</p>
+        {% for title, key in [('Relationship Strengths','strengths'),('Potential Challenges','challenges'),('Personalized Recommendations','recommendations'),('Communication Suggestions','communication_tips'),('Date & Bonding Ideas','date_ideas'),('Recommended Next Steps','next_steps')] %}
+        <h3>{{ title }}</h3>
+        <ul>{% for item in ai_content[key] %}<li>{{ item }}</li>{% endfor %}</ul>
+        {% endfor %}
+    </div>
+
+    <div class="card notice"><strong>Privacy & Safety:</strong> Only analyze conversations you are authorized to share. HeartAI does not guarantee relationship outcomes, does not present astrology as science, and is not a substitute for professional support.</div>
+</div>
+{% endblock %}

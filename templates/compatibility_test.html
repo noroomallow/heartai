@@ -1,0 +1,117 @@
+
+{% extends "base.html" %}
+
+{% block title %}
+HeartAI — Compatibility Test
+{% endblock %}
+
+{% block content %}
+
+<div class="compatibility-page">
+
+    <div class="compatibility-header">
+
+        <h1>💕 Couple Compatibility Test</h1>
+
+        <p>
+            {{ person }}, answer these 30 questions honestly.
+            Your partner will answer the same questions separately.
+        </p>
+
+        <div class="person-badge">
+            {% if person_number == 1 %}
+                👤 Your Answers
+            {% else %}
+                💕 Partner's Answers
+            {% endif %}
+        </div>
+
+    </div>
+
+
+    <form
+        method="POST"
+        action="{{ url_for('compatibility.submit_compatibility_test') }}"
+        class="compatibility-form"
+    >
+
+        {% for question in questions %}
+
+        <div class="question-card">
+
+            <div class="question-number">
+                Question {{ question.id }} of 30
+            </div>
+
+            <h3>
+                {{ question.question }}
+            </h3>
+
+            <div class="options">
+
+                {% for option in question.options %}
+
+                <label class="option">
+
+                    <input
+                        type="radio"
+                        name="q_{{ question.id }}"
+                        value="{{ loop.index }}"
+                        required
+                    >
+
+                    <span>
+                        {{ option }}
+                    </span>
+
+                </label>
+
+                {% endfor %}
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+
+        <div class="submit-section">
+
+            {% if person_number == 1 %}
+
+                <button
+                    type="submit"
+                    class="btn-primary"
+                >
+                    Save My Answers →
+                </button>
+
+                <p>
+                    Your answers will be saved separately.
+                    Your partner will answer next.
+                </p>
+
+            {% else %}
+
+                <button
+                    type="submit"
+                    class="btn-primary"
+                >
+                    ❤️ Compare Our Answers
+                </button>
+
+                <p>
+                    HeartAI will compare both answer sets
+                    and generate your compatibility report.
+                </p>
+
+            {% endif %}
+
+        </div>
+
+    </form>
+
+</div>
+
+{% endblock %}
+

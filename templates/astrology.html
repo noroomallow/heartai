@@ -1,0 +1,1010 @@
+{% extends "base.html" %}
+
+{% block title %}
+HeartAI — Astrology Insights
+{% endblock %}
+
+{% block content %}
+
+<div class="container-narrow">
+
+    <div class="card">
+
+        <h2>🔮 HeartAI Astrology</h2>
+
+        <p>
+            Explore an astrology-based interpretation
+            of personality, career, relationships and
+            traditional birth-chart themes.
+        </p>
+
+        <div class="disclaimer">
+
+            <strong>Important:</strong>
+
+            Astrology results are provided for
+            entertainment and personal reflection.
+            They are not scientifically proven and
+            do not guarantee future events or
+            relationship outcomes.
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         STEP 1
+    ====================================================== -->
+
+    <div class="card">
+
+        <h3>1. Choose Analysis Type</h3>
+
+        <div style="
+            display:flex;
+            gap:15px;
+            flex-wrap:wrap;
+            margin-top:15px;
+        ">
+
+            <button
+                type="button"
+                class="btn-primary"
+                onclick="showMode('single')"
+                id="singleBtn"
+            >
+                👤 Single
+            </button>
+
+            <button
+                type="button"
+                class="btn-secondary"
+                onclick="showMode('couple')"
+                id="coupleBtn"
+            >
+                ❤️ Couple
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         SINGLE FORM
+    ====================================================== -->
+
+    <div
+        class="card"
+        id="singleSection"
+        style="display:none;"
+    >
+
+        <h3>2. Your Birth Information</h3>
+
+        <form
+            method="POST"
+            action="{{ url_for('astrology.astrology_view') }}"
+        >
+
+            <input
+                type="hidden"
+                name="mode"
+                value="single"
+            >
+
+            <div class="form-group">
+
+                <label>
+                    Full Name
+                </label>
+
+                <input
+                    type="text"
+                    name="full_name"
+                    placeholder="Enter your full name"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Last Name
+                </label>
+
+                <input
+                    type="text"
+                    name="last_name"
+                    placeholder="Optional last name"
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Date of Birth
+                </label>
+
+                <input
+                    type="date"
+                    name="birth_date"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Exact Birth Time
+                </label>
+
+                <input
+                    type="time"
+                    name="birth_time"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Birth Place
+                </label>
+
+                <input
+                    type="text"
+                    name="birth_place"
+                    placeholder="City, State, Country"
+                    required
+                >
+
+            </div>
+
+
+            <button
+                type="submit"
+                class="btn-primary btn-block"
+            >
+                🔮 Generate My Astrology
+            </button>
+
+        </form>
+
+    </div>
+
+
+    <!-- =====================================================
+         COUPLE FORM
+    ====================================================== -->
+
+    <div
+        class="card"
+        id="coupleSection"
+        style="display:none;"
+    >
+
+        <h3>2. Your Information</h3>
+
+        <form
+            method="POST"
+            action="{{ url_for('astrology.astrology_view') }}"
+        >
+
+            <input
+                type="hidden"
+                name="mode"
+                value="couple"
+            >
+
+
+            <!-- PERSON 1 -->
+
+            <h4>👤 Person 1</h4>
+
+            <div class="form-group">
+
+                <label>
+                    Full Name
+                </label>
+
+                <input
+                    type="text"
+                    name="full_name"
+                    placeholder="Your full name"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Last Name
+                </label>
+
+                <input
+                    type="text"
+                    name="last_name"
+                    placeholder="Your last name"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Date of Birth
+                </label>
+
+                <input
+                    type="date"
+                    name="birth_date"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Exact Birth Time
+                </label>
+
+                <input
+                    type="time"
+                    name="birth_time"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Birth Place
+                </label>
+
+                <input
+                    type="text"
+                    name="birth_place"
+                    placeholder="City, State, Country"
+                    required
+                >
+
+            </div>
+
+
+            <hr>
+
+
+            <!-- PARTNER -->
+
+            <h3>❤️ Partner Information</h3>
+
+            <div class="form-group">
+
+                <label>
+                    Partner Full Name
+                </label>
+
+                <input
+                    type="text"
+                    name="partner_full_name"
+                    placeholder="Partner full name"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Partner Last Name
+                </label>
+
+                <input
+                    type="text"
+                    name="partner_last_name"
+                    placeholder="Optional last name"
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Partner Date of Birth
+                </label>
+
+                <input
+                    type="date"
+                    name="partner_birth_date"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Partner Exact Birth Time
+                </label>
+
+                <input
+                    type="time"
+                    name="partner_birth_time"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Partner Birth Place
+                </label>
+
+                <input
+                    type="text"
+                    name="partner_birth_place"
+                    placeholder="City, State, Country"
+                    required
+                >
+
+            </div>
+
+
+            <button
+                type="submit"
+                class="btn-primary btn-block"
+            >
+                ❤️ Generate Couple Astrology
+            </button>
+
+        </form>
+
+    </div>
+
+
+    <!-- =====================================================
+         RESULTS
+    ====================================================== -->
+
+    {% if reading %}
+
+    <div class="card">
+
+        <h2>
+            ✨ Astrology Result
+        </h2>
+
+        <p>
+
+            Analysis Type:
+
+            <strong>
+                {{ reading.mode|capitalize }}
+            </strong>
+
+        </p>
+
+
+        <!-- =================================================
+             PERSON 1
+        ================================================== -->
+
+        {% if person1_data %}
+
+        <div class="card">
+
+            <h3>
+                👤 {{ person1_data.name }}
+            </h3>
+
+            <p>
+                <strong>Date of Birth:</strong>
+                {{ person1_data.birth_date }}
+            </p>
+
+            <p>
+                <strong>Birth Time:</strong>
+                {{ person1_data.birth_time }}
+            </p>
+
+            <p>
+                <strong>Birth Place:</strong>
+                {{ person1_data.birth_place }}
+            </p>
+
+
+            <div class="astrology-pair">
+
+                <div class="astro-box">
+
+                    <h4>
+                        ☀️ Zodiac
+                    </h4>
+
+                    <p class="sign-name">
+                        {{ person1_data.zodiac_sign }}
+                    </p>
+
+                </div>
+
+
+                <div class="astro-box">
+
+                    <h4>
+                        🌙 Rasi
+                    </h4>
+
+                    <p class="sign-name">
+                        {{ person1_data.rasi }}
+                    </p>
+
+                </div>
+
+
+                <div class="astro-box">
+
+                    <h4>
+                        ⭐ Nakshatra
+                    </h4>
+
+                    <p class="sign-name">
+                        {{ person1_data.nakshatra }}
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <h3>🧑 Character</h3>
+
+            <p>
+                {{ person1_data.character }}
+            </p>
+
+
+            <h3>🧠 Personality</h3>
+
+            <p>
+                {{ person1_data.personality }}
+            </p>
+
+
+            <h3>💭 Emotional Nature</h3>
+
+            <p>
+                {{ person1_data.emotional_nature }}
+            </p>
+
+
+            <h3>💬 Communication Style</h3>
+
+            <p>
+                {{ person1_data.communication_style }}
+            </p>
+
+
+            <h3>💪 Strengths</h3>
+
+            <ul>
+
+                {% for item in person1_data.strengths %}
+
+                <li>
+                    {{ item }}
+                </li>
+
+                {% endfor %}
+
+            </ul>
+
+
+            <h3>⚠️ Challenges</h3>
+
+            <ul>
+
+                {% for item in person1_data.challenges %}
+
+                <li>
+                    {{ item }}
+                </li>
+
+                {% endfor %}
+
+            </ul>
+
+
+            <h3>💼 Career</h3>
+
+            <p>
+                {{ person1_data.career }}
+            </p>
+
+
+            <h3>🎯 Suitable Career Areas</h3>
+
+            <ul>
+
+                {% for item in person1_data.suitable_careers %}
+
+                <li>
+                    {{ item }}
+                </li>
+
+                {% endfor %}
+
+            </ul>
+
+
+            <h3>❤️ Love & Relationship</h3>
+
+            <p>
+                {{ person1_data.love_relationship }}
+            </p>
+
+
+            <h3>👨‍👩‍👧 Family & Social Nature</h3>
+
+            <p>
+                {{ person1_data.family_social_nature }}
+            </p>
+
+
+            <h3>🌱 Growth Areas</h3>
+
+            <ul>
+
+                {% for item in person1_data.growth_areas %}
+
+                <li>
+                    {{ item }}
+                </li>
+
+                {% endfor %}
+
+            </ul>
+
+
+            <h3>✨ Overall Summary</h3>
+
+            <p>
+                {{ person1_data.summary }}
+            </p>
+
+        </div>
+
+        {% endif %}
+
+
+        <!-- =================================================
+             PERSON 2
+        ================================================== -->
+
+        {% if person2_data %}
+
+        <div class="card">
+
+            <h3>
+                ❤️ {{ person2_data.name }}
+            </h3>
+
+
+            <div class="astrology-pair">
+
+                <div class="astro-box">
+
+                    <h4>
+                        ☀️ Zodiac
+                    </h4>
+
+                    <p class="sign-name">
+                        {{ person2_data.zodiac_sign }}
+                    </p>
+
+                </div>
+
+
+                <div class="astro-box">
+
+                    <h4>
+                        🌙 Rasi
+                    </h4>
+
+                    <p class="sign-name">
+                        {{ person2_data.rasi }}
+                    </p>
+
+                </div>
+
+
+                <div class="astro-box">
+
+                    <h4>
+                        ⭐ Nakshatra
+                    </h4>
+
+                    <p class="sign-name">
+                        {{ person2_data.nakshatra }}
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <h3>🧑 Character</h3>
+
+            <p>
+                {{ person2_data.character }}
+            </p>
+
+
+            <h3>🧠 Personality</h3>
+
+            <p>
+                {{ person2_data.personality }}
+            </p>
+
+
+            <h3>💼 Career</h3>
+
+            <p>
+                {{ person2_data.career }}
+            </p>
+
+
+            <h3>❤️ Love & Relationship</h3>
+
+            <p>
+                {{ person2_data.love_relationship }}
+            </p>
+
+
+            <h3>💪 Strengths</h3>
+
+            <ul>
+
+                {% for item in person2_data.strengths %}
+
+                <li>
+                    {{ item }}
+                </li>
+
+                {% endfor %}
+
+            </ul>
+
+
+            <h3>⚠️ Challenges</h3>
+
+            <ul>
+
+                {% for item in person2_data.challenges %}
+
+                <li>
+                    {{ item }}
+                </li>
+
+                {% endfor %}
+
+            </ul>
+
+        </div>
+
+        {% endif %}
+
+
+        <!-- =================================================
+             COUPLE RESULT
+        ================================================== -->
+
+        {% if combined_data %}
+
+        <div class="card">
+
+            <h2>
+                💕 Combined Couple Astrology
+            </h2>
+
+
+            <h3>
+                💞 Overall Connection
+            </h3>
+
+            <p>
+                {{ combined_data.couple_summary }}
+            </p>
+
+
+            <h3>
+                🧑‍🤝‍🧑 Common Character
+            </h3>
+
+            <p>
+                {{ combined_data.common_character }}
+            </p>
+
+
+            <h3>
+                🧠 Personality Connection
+            </h3>
+
+            <p>
+                {{ combined_data.personality_connection }}
+            </p>
+
+
+            <h3>
+                🔄 Differences
+            </h3>
+
+            <p>
+                {{ combined_data.differences }}
+            </p>
+
+
+            <h3>
+                💗 Emotional Compatibility
+            </h3>
+
+            <p>
+                {{ combined_data.emotional_compatibility }}
+            </p>
+
+
+            <h3>
+                💬 Communication Compatibility
+            </h3>
+
+            <p>
+                {{ combined_data.communication_compatibility }}
+            </p>
+
+
+            <h3>
+                ❤️ Love Relationship
+            </h3>
+
+            <p>
+                {{ combined_data.love_relationship }}
+            </p>
+
+
+            <h3>
+                ✨ Mutual Attraction
+            </h3>
+
+            <p>
+                {{ combined_data.mutual_attraction }}
+            </p>
+
+
+            <h3>
+                🤝 Understanding & Support
+            </h3>
+
+            <p>
+                {{ combined_data.understanding_support }}
+            </p>
+
+
+            <h3>
+                ⚡ Conflict Tendencies
+            </h3>
+
+            <p>
+                {{ combined_data.conflict_tendencies }}
+            </p>
+
+
+            <h3>
+                💪 Shared Strengths
+            </h3>
+
+            <ul>
+
+                {% for item in combined_data.shared_strengths %}
+
+                <li>
+                    {{ item }}
+                </li>
+
+                {% endfor %}
+
+            </ul>
+
+
+            <h3>
+                ⚠️ Possible Challenges
+            </h3>
+
+            <ul>
+
+                {% for item in combined_data.possible_challenges %}
+
+                <li>
+                    {{ item }}
+                </li>
+
+                {% endfor %}
+
+            </ul>
+
+
+            <h3>
+                💼 Career & Life Goal Harmony
+            </h3>
+
+            <p>
+                {{ combined_data.career_life_goal_harmony }}
+            </p>
+
+
+            <h3>
+                👨‍👩‍👧 Family & Social Compatibility
+            </h3>
+
+            <p>
+                {{ combined_data.family_social_compatibility }}
+            </p>
+
+
+            <h3>
+                🧩 How They Complement Each Other
+            </h3>
+
+            <p>
+                {{ combined_data.how_they_complement }}
+            </p>
+
+
+            <h3>
+                🌱 Areas for Understanding
+            </h3>
+
+            <ul>
+
+                {% for item in combined_data.areas_for_understanding %}
+
+                <li>
+                    {{ item }}
+                </li>
+
+                {% endfor %}
+
+            </ul>
+
+
+            <h3>
+                💡 Relationship Advice
+            </h3>
+
+            <ul>
+
+                {% for item in combined_data.relationship_advice %}
+
+                <li>
+                    {{ item }}
+                </li>
+
+                {% endfor %}
+
+            </ul>
+
+
+            <h3>
+                ❤️ Overall Interpretation
+            </h3>
+
+            <p>
+                {{ combined_data.overall_interpretation }}
+            </p>
+
+        </div>
+
+        {% endif %}
+
+
+        <div class="disclaimer">
+
+            <strong>Astrology Notice:</strong>
+
+            {{ person1_data.disclaimer
+               if person1_data and person1_data.disclaimer
+               else
+               "Astrology-based interpretation for entertainment and personal reflection. It does not scientifically predict life or relationship outcomes."
+            }}
+
+        </div>
+
+    </div>
+
+    {% endif %}
+
+</div>
+
+
+<script>
+
+function showMode(mode) {
+
+    const single =
+        document.getElementById(
+            "singleSection"
+        );
+
+    const couple =
+        document.getElementById(
+            "coupleSection"
+        );
+
+    const singleBtn =
+        document.getElementById(
+            "singleBtn"
+        );
+
+    const coupleBtn =
+        document.getElementById(
+            "coupleBtn"
+        );
+
+    if (mode === "single") {
+
+        single.style.display = "block";
+        couple.style.display = "none";
+
+        singleBtn.className =
+            "btn-primary";
+
+        coupleBtn.className =
+            "btn-secondary";
+
+        single.scrollIntoView({
+            behavior: "smooth"
+        });
+
+    } else {
+
+        single.style.display = "none";
+        couple.style.display = "block";
+
+        singleBtn.className =
+            "btn-secondary";
+
+        coupleBtn.className =
+            "btn-primary";
+
+        couple.scrollIntoView({
+            behavior: "smooth"
+        });
+    }
+}
+
+document.addEventListener("DOMContentLoaded", function () { showMode("single"); });
+</script>
+
+{% endblock %}
+

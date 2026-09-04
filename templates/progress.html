@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container-narrow">
+    <div class="card">
+        <h2>📈 Relationship Progress Tracking</h2>
+        <p>Score comparisons and milestone tracking over time.</p>
+        
+        {% if comp %}
+            <div class="score-comparison">
+                <div class="stat-box">
+                    <h4>Current Compatibility</h4>
+                    <span class="stat-num">{{ comp.overall_score }}%</span>
+                </div>
+            </div>
+        {% endif %}
+        
+        <p class="disclaimer mt-4">Your assessment score updates dynamically as new questionnaires and chat sentiment inputs are recorded.</p>
+    </div>
+</div>
+{% endblock %}

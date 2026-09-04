@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="auth-container">
+    <div class="auth-card">
+        <h2>Create your HeartAI Account</h2>
+        <form method="POST" action="{{ url_for('auth.register') }}">
+            <div class="form-group">
+                <label for="name">Full Name</label>
+                <input type="text" id="name" name="name" required placeholder="Alex Morgan">
+            </div>
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="email" required placeholder="alex@example.com">
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required placeholder="••••••••">
+            </div>
+            <button type="submit" class="btn-primary btn-block">Create Account</button>
+        </form>
+        <p class="auth-footer">Already registered? <a href="{{ url_for('auth.login') }}">Sign In</a></p>
+    </div>
+</div>
+{% endblock %}

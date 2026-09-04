@@ -1,0 +1,814 @@
+
+{% extends "base.html" %}
+
+{% block title %}
+HeartAI — WhatsApp Chat AI Analysis
+{% endblock %}
+
+{% block content %}
+
+<style>
+    .chat-page {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 30px 15px;
+    }
+
+    .chat-header {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    .chat-header h1 {
+        font-size: 34px;
+        margin-bottom: 10px;
+    }
+
+    .chat-header p {
+        color: #666;
+        font-size: 16px;
+    }
+
+    .chat-card {
+        background: #fff;
+        border-radius: 18px;
+        padding: 25px;
+        margin-bottom: 25px;
+        box-shadow: 0 5px 25px rgba(0, 0, 0, 0.08);
+    }
+
+    .chat-card h2 {
+        margin-top: 0;
+        margin-bottom: 15px;
+    }
+
+    .upload-area {
+        border: 2px dashed #bbb;
+        border-radius: 15px;
+        padding: 35px;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .upload-area input[type="file"] {
+        margin-top: 15px;
+    }
+
+    .chat-textarea {
+        width: 100%;
+        min-height: 250px;
+        resize: vertical;
+        border: 1px solid #ddd;
+        border-radius: 12px;
+        padding: 15px;
+        box-sizing: border-box;
+        font-family: monospace;
+        font-size: 14px;
+    }
+
+    .analyze-btn {
+        width: 100%;
+        border: none;
+        border-radius: 12px;
+        padding: 15px 20px;
+        margin-top: 20px;
+        font-size: 17px;
+        font-weight: 600;
+        cursor: pointer;
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(
+            auto-fit,
+            minmax(180px, 1fr)
+        );
+        gap: 15px;
+    }
+
+    .stat-box {
+        border-radius: 15px;
+        padding: 20px;
+        text-align: center;
+        background: #f7f7f7;
+    }
+
+    .stat-box .number {
+        font-size: 30px;
+        font-weight: 700;
+        margin-bottom: 5px;
+    }
+
+    .stat-box .label {
+        font-size: 14px;
+        color: #666;
+    }
+
+    .participants-grid {
+        display: grid;
+        grid-template-columns: repeat(
+            auto-fit,
+            minmax(220px, 1fr)
+        );
+        gap: 15px;
+    }
+
+    .participant-card {
+        padding: 20px;
+        border-radius: 15px;
+        background: #f7f7f7;
+    }
+
+    .participant-name {
+        font-size: 18px;
+        font-weight: 700;
+        margin-bottom: 8px;
+    }
+
+    .score-circle {
+        text-align: center;
+        padding: 25px;
+        border-radius: 15px;
+        background: #f7f7f7;
+    }
+
+    .score-number {
+        font-size: 42px;
+        font-weight: 800;
+    }
+
+    .score-label {
+        color: #666;
+    }
+
+    .scores-grid {
+        display: grid;
+        grid-template-columns: repeat(
+            auto-fit,
+            minmax(220px, 1fr)
+        );
+        gap: 20px;
+    }
+
+    .sentiment-bar {
+        margin: 15px 0;
+    }
+
+    .sentiment-header {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 6px;
+    }
+
+    .progress {
+        width: 100%;
+        height: 12px;
+        background: #eee;
+        border-radius: 20px;
+        overflow: hidden;
+    }
+
+    .progress-inner {
+        height: 100%;
+        border-radius: 20px;
+    }
+
+    .tone {
+        display: inline-block;
+        padding: 8px 15px;
+        border-radius: 20px;
+        background: #f0f0f0;
+        font-weight: 600;
+    }
+
+    .result-list {
+        padding-left: 20px;
+    }
+
+    .result-list li {
+        margin-bottom: 10px;
+        line-height: 1.6;
+    }
+
+    .summary {
+        font-size: 17px;
+        line-height: 1.8;
+    }
+
+    .privacy-note {
+        text-align: center;
+        color: #777;
+        font-size: 13px;
+        margin-top: 25px;
+        line-height: 1.6;
+    }
+
+    .chat-preview {
+        max-height: 300px;
+        overflow-y: auto;
+        background: #f7f7f7;
+        border-radius: 12px;
+        padding: 15px;
+        white-space: pre-wrap;
+        font-family: monospace;
+        font-size: 13px;
+    }
+
+    @media (max-width: 600px) {
+
+        .chat-header h1 {
+            font-size: 27px;
+        }
+
+        .chat-card {
+            padding: 18px;
+        }
+
+        .upload-area {
+            padding: 25px 15px;
+        }
+    }
+</style>
+
+
+<div class="chat-page">
+
+    <!-- ================================================= -->
+    <!-- HEADER -->
+    <!-- ================================================= -->
+
+    <div class="chat-header">
+
+        <h1>
+            💬 WhatsApp Chat AI
+        </h1>
+
+        <p>
+            Upload or paste your WhatsApp conversation
+            and let HeartAI analyze the communication patterns.
+        </p>
+
+    </div>
+
+
+    <!-- ================================================= -->
+    <!-- INPUT -->
+    <!-- ================================================= -->
+
+    <div class="chat-card">
+
+        <h2>
+            📥 Analyze WhatsApp Chat
+        </h2>
+
+        <p>
+            Export your WhatsApp conversation as a
+            <strong>.txt</strong> file and upload it below.
+        </p>
+
+        <form
+            method="POST"
+            action="{{ url_for('chat.chat_analysis') }}"
+            enctype="multipart/form-data"
+        >
+
+            <div class="upload-area">
+
+                <strong>
+                    📄 Upload WhatsApp .txt file
+                </strong>
+
+                <br>
+
+                <small>
+                    WhatsApp → Chat Info → Export Chat →
+                    Without Media
+                </small>
+
+                <br>
+
+                <input
+                    type="file"
+                    name="chat_file"
+                    accept=".txt"
+                >
+
+            </div>
+
+
+            <div style="text-align:center; margin:15px 0;">
+                <strong>OR</strong>
+            </div>
+
+
+            <label for="chat_text">
+                <strong>
+                    Paste WhatsApp Chat
+                </strong>
+            </label>
+
+            <br><br>
+
+            <textarea
+                id="chat_text"
+                name="chat_text"
+                class="chat-textarea"
+                placeholder="Paste your exported WhatsApp conversation here...
+
+Example:
+
+21/07/2026, 2:43 pm - Raasigaravi R: Hi
+21/07/2026, 2:43 pm - Furkhan: Yes
+31/08/2026, 12:03 pm - Raasigaravi R: Oii
+31/08/2026, 12:04 pm - Furkhan: Its ok"
+            >{{ chat_text }}</textarea>
+
+
+            <button
+                type="submit"
+                class="analyze-btn btn-primary"
+            >
+                🔍 Analyze Chat with Gemini
+            </button>
+
+        </form>
+
+    </div>
+
+
+    {% if result %}
+
+    <!-- ================================================= -->
+    <!-- PARTICIPANTS -->
+    <!-- ================================================= -->
+
+    <div class="chat-card">
+
+        <h2>
+            👥 Participants
+        </h2>
+
+        <div class="participants-grid">
+
+            {% for person in participants %}
+
+                <div class="participant-card">
+
+                    <div class="participant-name">
+                        {{ person }}
+                    </div>
+
+                    {% if statistics and statistics.participant_counts %}
+
+                        <div>
+                            Messages:
+                            <strong>
+                                {{ statistics.participant_counts.get(person, 0) }}
+                            </strong>
+                        </div>
+
+                    {% endif %}
+
+                    {% if statistics and statistics.participant_percentages %}
+
+                        <div>
+                            Participation:
+                            <strong>
+                                {{ statistics.participant_percentages.get(person, 0) }}%
+                            </strong>
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+
+    <!-- ================================================= -->
+    <!-- BASIC STATISTICS -->
+    <!-- ================================================= -->
+
+    <div class="chat-card">
+
+        <h2>
+            📊 Conversation Statistics
+        </h2>
+
+        <div class="stats-grid">
+
+            <div class="stat-box">
+
+                <div class="number">
+                    {{ statistics.total_messages or 0 }}
+                </div>
+
+                <div class="label">
+                    Total Messages
+                </div>
+
+            </div>
+
+
+            <div class="stat-box">
+
+                <div class="number">
+                    {{ participants|length }}
+                </div>
+
+                <div class="label">
+                    Participants
+                </div>
+
+            </div>
+
+
+            <div class="stat-box">
+
+                <div class="number">
+                    {{ statistics.average_message_length or 0 }}
+                </div>
+
+                <div class="label">
+                    Avg. Message Length
+                </div>
+
+            </div>
+
+
+            <div class="stat-box">
+
+                <div class="number">
+                    {{ statistics.media_messages or 0 }}
+                </div>
+
+                <div class="label">
+                    Media Messages
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ================================================= -->
+    <!-- AI SCORES -->
+    <!-- ================================================= -->
+
+    <div class="chat-card">
+
+        <h2>
+            ❤️ AI Communication Scores
+        </h2>
+
+        <div class="scores-grid">
+
+            <div class="score-circle">
+
+                <div class="score-number">
+                    {{ result.communication_score|round|int }}
+                </div>
+
+                <div class="score-label">
+                    Communication Score
+                </div>
+
+            </div>
+
+
+            <div class="score-circle">
+
+                <div class="score-number">
+                    {{ result.engagement_score|round|int }}
+                </div>
+
+                <div class="score-label">
+                    Engagement Score
+                </div>
+
+            </div>
+
+
+            <div class="score-circle">
+
+                <div class="score-number">
+                    {{ result.emotional_tone }}
+                </div>
+
+                <div class="score-label">
+                    Emotional Tone
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ================================================= -->
+    <!-- SENTIMENT -->
+    <!-- ================================================= -->
+
+    <div class="chat-card">
+
+        <h2>
+            😊 Conversation Sentiment
+        </h2>
+
+
+        <div class="sentiment-bar">
+
+            <div class="sentiment-header">
+
+                <span>
+                    Positive
+                </span>
+
+                <strong>
+                    {{ result.positive_percentage }}%
+                </strong>
+
+            </div>
+
+            <div class="progress">
+
+                <div
+                    class="progress-inner"
+                    style="width: {{ result.positive_percentage }}%; background:#4caf50;"
+                ></div>
+
+            </div>
+
+        </div>
+
+
+        <div class="sentiment-bar">
+
+            <div class="sentiment-header">
+
+                <span>
+                    Neutral
+                </span>
+
+                <strong>
+                    {{ result.neutral_percentage }}%
+                </strong>
+
+            </div>
+
+            <div class="progress">
+
+                <div
+                    class="progress-inner"
+                    style="width: {{ result.neutral_percentage }}%; background:#999;"
+                ></div>
+
+            </div>
+
+        </div>
+
+
+        <div class="sentiment-bar">
+
+            <div class="sentiment-header">
+
+                <span>
+                    Negative
+                </span>
+
+                <strong>
+                    {{ result.negative_percentage }}%
+                </strong>
+
+            </div>
+
+            <div class="progress">
+
+                <div
+                    class="progress-inner"
+                    style="width: {{ result.negative_percentage }}%; background:#f44336;"
+                ></div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ================================================= -->
+    <!-- AI SUMMARY -->
+    <!-- ================================================= -->
+
+    <div class="chat-card">
+
+        <h2>
+            🧠 Gemini Analysis
+        </h2>
+
+        <p class="summary">
+            {{ result.summary }}
+        </p>
+
+    </div>
+
+
+    <!-- ================================================= -->
+    <!-- CONVERSATION PATTERN -->
+    <!-- ================================================= -->
+
+    {% if result.conversation_pattern %}
+
+    <div class="chat-card">
+
+        <h2>
+            💬 Conversation Pattern
+        </h2>
+
+        <ul class="result-list">
+
+            {% for item in result.conversation_pattern %}
+
+                <li>
+                    {{ item }}
+                </li>
+
+            {% endfor %}
+
+        </ul>
+
+    </div>
+
+    {% endif %}
+
+
+    <!-- ================================================= -->
+    <!-- RELATIONSHIP SIGNALS -->
+    <!-- ================================================= -->
+
+    {% if result.relationship_signals %}
+
+    <div class="chat-card">
+
+        <h2>
+            ❤️ Relationship Communication Signals
+        </h2>
+
+        <ul class="result-list">
+
+            {% for item in result.relationship_signals %}
+
+                <li>
+                    {{ item }}
+                </li>
+
+            {% endfor %}
+
+        </ul>
+
+    </div>
+
+    {% endif %}
+
+
+    <!-- ================================================= -->
+    <!-- STRENGTHS -->
+    <!-- ================================================= -->
+
+    {% if result.strengths %}
+
+    <div class="chat-card">
+
+        <h2>
+            🌟 Communication Strengths
+        </h2>
+
+        <ul class="result-list">
+
+            {% for item in result.strengths %}
+
+                <li>
+                    {{ item }}
+                </li>
+
+            {% endfor %}
+
+        </ul>
+
+    </div>
+
+    {% endif %}
+
+
+    <!-- ================================================= -->
+    <!-- AREAS TO IMPROVE -->
+    <!-- ================================================= -->
+
+    {% if result.areas_to_improve %}
+
+    <div class="chat-card">
+
+        <h2>
+            ⚠️ Areas to Improve
+        </h2>
+
+        <ul class="result-list">
+
+            {% for item in result.areas_to_improve %}
+
+                <li>
+                    {{ item }}
+                </li>
+
+            {% endfor %}
+
+        </ul>
+
+    </div>
+
+    {% endif %}
+
+
+    <!-- ================================================= -->
+    <!-- SUGGESTIONS -->
+    <!-- ================================================= -->
+
+    {% if result.suggestions %}
+
+    <div class="chat-card">
+
+        <h2>
+            💡 HeartAI Suggestions
+        </h2>
+
+        <ul class="result-list">
+
+            {% for item in result.suggestions %}
+
+                <li>
+                    {{ item }}
+                </li>
+
+            {% endfor %}
+
+        </ul>
+
+    </div>
+
+    {% endif %}
+
+
+    <!-- ================================================= -->
+    <!-- CHAT PREVIEW -->
+    <!-- ================================================= -->
+
+    {% if chat_text %}
+
+    <div class="chat-card">
+
+        <h2>
+            📄 Chat Used for Analysis
+        </h2>
+
+        <div class="chat-preview">
+{{ chat_text }}
+        </div>
+
+    </div>
+
+    {% endif %}
+
+    {% endif %}
+
+
+    <!-- ================================================= -->
+    <!-- PRIVACY -->
+    <!-- ================================================= -->
+
+    <div class="privacy-note">
+
+        <strong>
+            Privacy & Safety Notice
+        </strong>
+
+        <br>
+
+        HeartAI analyzes only the conversation supplied by
+        the user. The analysis describes communication patterns
+        and does not determine whether people are definitely
+        in love, predict future relationship outcomes, or
+        provide medical or psychological diagnoses.
+
+    </div>
+
+</div>
+
+{% endblock %}
+

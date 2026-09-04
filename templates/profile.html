@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container-narrow">
+    <div class="card">
+        <h2>Your Profile & Astrology Details</h2>
+        <form method="POST" action="{{ url_for('personality.profile') }}">
+            <div class="form-group">
+                <label>Full Name</label>
+                <input type="text" name="name" value="{{ user.name }}" required>
+            </div>
+            <div class="form-group">
+                <label>Date of Birth (Used for Astrology Insights)</label>
+                <input type="date" name="birth_date" value="{{ astro.birth_date if astro else '' }}">
+            </div>
+            <div class="form-group">
+                <label>Birth Time (Optional)</label>
+                <input type="time" name="birth_time" value="{{ astro.birth_time if astro else '' }}">
+            </div>
+            <div class="form-group">
+                <label>Birth Place (Optional)</label>
+                <input type="text" name="birth_place" value="{{ astro.birth_place if astro else '' }}" placeholder="City, Country">
+            </div>
+            <button type="submit" class="btn-primary">Save Profile</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,51 @@
+.hero-section {
+    text-align: center;
+    padding: 4rem 1rem;
+}
+
+.hero-card {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.hero-card h1 {
+    font-size: 2.8rem;
+    color: var(--primary-color);
+}
+
+.subtitle {
+    font-size: 1.2rem;
+    color: var(--text-muted);
+    margin-bottom: 2rem;
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+}
+
+.feature-card {
+    background: white;
+    padding: 1.8rem;
+    border-radius: 12px;
+    text-align: center;
+}
+
+.feature-card .icon { font-size: 2.5rem; margin-bottom: 0.5rem; }
+
+.metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.5rem;
+}
+
+.score-badge {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin: 0.5rem 0;
+}
+
+.score-badge.high { color: #27ae60; }
+.score-badge.moderate { color: #f39c12; }
+.score-badge.low { color: #e74c3c; }

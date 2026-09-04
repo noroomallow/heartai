@@ -1,0 +1,396 @@
+{% extends "base.html" %}
+
+{% block title %}HeartAI Dashboard{% endblock %}
+
+{% block content %}
+
+<div class="main-content">
+
+    <!-- Welcome -->
+    <div class="card">
+        <h1>❤️ Welcome, {{ user.name }}</h1>
+        <p>
+            Your HeartAI relationship dashboard brings your personality,
+            compatibility, chat analysis, AI coaching and astrology results
+            together in one place.
+        </p>
+    </div>
+
+    {% if assessment %}
+    <!-- Overall Assessment -->
+    <div class="card" style="margin-bottom:20px;">
+        <h2>🎯 Overall Relationship Score</h2>
+        <div class="score-badge" style="font-size:2.4rem;">{{ "%.1f"|format(assessment.overall_score) }}%</div>
+        <h3>{{ assessment.category }}</h3>
+        <p>{{ assessment.tests_completed }} test(s) completed. The score uses only completed assessments.</p>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:15px;">
+            <a class="btn-primary" href="{{ url_for('assessment.assessment_report') }}">📊 Full Score & Tests</a>
+            <a class="btn-primary" href="{{ url_for('assessment.assessment_report_pdf') }}">📄 Generate PDF</a>
+            {% if plan %}<a class="btn-primary" href="{{ url_for('progress.plan_view') }}">🗓️ 30-Day Plan</a>{% endif %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Main Metrics -->
+    <div class="metrics-grid">
+
+        <!-- Personality -->
+        <div class="card">
+            <h3>🧠 Personality</h3>
+
+            <div class="score-badge">
+                {{ "%.0f"|format((personality.overall_score if personality else 0)|float) }}%
+            </div>
+
+            <p>
+                {% if personality %}
+                    {{ personality.personality_type or "Personality Profile" }}
+                {% else %}
+                    Not completed
+                {% endif %}
+            </p>
+        </div>
+
+        <!-- Compatibility -->
+        <div class="card">
+            <h3>❤️ Compatibility</h3>
+
+            <div class="score-badge">
+                {{ "%.0f"|format((compatibility.overall_score if compatibility else 0)|float) }}%
+            </div>
+
+            <p>
+                {% if compatibility %}
+                    {{ compatibility.category or "Compatibility Result" }}
+                {% else %}
+                    Not completed
+                {% endif %}
+            </p>
+        </div>
+
+        <!-- Chat -->
+        <div class="card">
+            <h3>💬 Chat Communication</h3>
+
+            <div class="score-badge">
+                {{ "%.0f"|format((chat.communication_score if chat else 0)|float) }}%
+            </div>
+
+            <p>
+                {% if chat %}
+                    {{ chat.emotional_tone or "Analyzed" }}
+                {% else %}
+                    No chat analysis
+                {% endif %}
+            </p>
+        </div>
+
+        <!-- Astrology -->
+        <div class="card">
+            <h3>🔮 Astrology</h3>
+
+            <div class="score-badge">
+                {% if astrology %}
+                    ✓
+                {% else %}
+                    —
+                {% endif %}
+            </div>
+
+            <p>
+                {% if astrology %}
+                    {{ astrology.mode|capitalize }}
+                {% else %}
+                    Not completed
+                {% endif %}
+            </p>
+        </div>
+
+    </div>
+
+
+    <!-- Compatibility Result -->
+    {% if compatibility %}
+
+    <div class="card">
+
+        <h2>❤️ Compatibility Test Result</h2>
+
+        <h3>
+            {{ compatibility.category or "Compatibility" }}
+            —
+            {{ "%.0f"|format(compatibility.overall_score|float) }}%
+        </h3>
+
+        <p>
+            Your latest compatibility test has been saved successfully.
+        </p>
+
+        {% if relationship %}
+        <p>
+            <strong>Partner:</strong>
+            {{ relationship.partner_name }}
+        </p>
+        {% endif %}
+
+        <div style="margin-top:20px;">
+            <a
+                class="btn-primary"
+                href="{{ url_for('compatibility.view_latest') }}"
+            >
+                View Full Compatibility Result
+            </a>
+        </div>
+
+    </div>
+
+    {% endif %}
+
+
+    <!-- Chat Analysis -->
+    {% if chat %}
+
+    <div class="card">
+
+        <h2>💬 Latest Chat AI Analysis</h2>
+
+        <p>
+            <strong>Messages:</strong>
+            {{ chat.total_messages or 0 }}
+
+            &nbsp; | &nbsp;
+
+            <strong>Communication:</strong>
+            {{ "%.0f"|format((chat.communication_score or 0)|float) }}%
+
+            &nbsp; | &nbsp;
+
+            <strong>Engagement:</strong>
+            {{ "%.0f"|format((chat.engagement_score or 0)|float) }}%
+        </p>
+
+        <p>
+            <strong>Emotional Tone:</strong>
+            {{ chat.emotional_tone or "Neutral" }}
+        </p>
+
+        {% if chat.ai_summary %}
+        <div style="
+            margin-top:15px;
+            padding:15px;
+            border-radius:10px;
+            background:rgba(255,255,255,0.06);
+            line-height:1.7;
+        ">
+            {{ chat.ai_summary }}
+        </div>
+        {% endif %}
+
+        <div style="margin-top:20px;">
+            <a
+                class="btn-primary"
+                href="{{ url_for('chat.latest_analysis') }}"
+            >
+                View Full Chat Analysis
+            </a>
+        </div>
+
+    </div>
+
+    {% endif %}
+
+
+    <!-- Astrology Result -->
+    {% if astrology %}
+
+    <div class="card">
+
+        <h2>🔮 Latest Astrology Reading</h2>
+
+        <p>
+            <strong>{{ astrology.person1_name }}</strong>
+
+            {% if astrology.person2_name %}
+                ❤️
+                <strong>{{ astrology.person2_name }}</strong>
+            {% endif %}
+        </p>
+
+        {% if astrology.created_at %}
+        <p>
+            Saved:
+            {{ astrology.created_at.strftime('%d %b %Y, %I:%M %p') }}
+        </p>
+        {% endif %}
+
+        <div style="margin-top:20px;">
+            <a
+                class="btn-primary"
+                href="{{ url_for('astrology.astrology_view') }}"
+            >
+                View Astrology
+            </a>
+        </div>
+
+    </div>
+
+    {% endif %}
+
+
+    {% if assessment_history %}
+    <div class="card">
+        <h2>📈 Overall Score History</h2>
+        {% for item in assessment_history %}
+        <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(128,128,128,.2);">
+            <span>{{ item.created_at.strftime('%d %b %Y, %I:%M %p') if item.created_at else '' }} — {{ item.category }}</span>
+            <strong>{{ "%.1f"|format(item.overall_score) }}%</strong>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if plan %}
+    <div class="card">
+        <h2>🗓️ Your 30-Day Personalized Plan</h2>
+        <p><strong>{{ "%.1f"|format(plan.initial_score) }}%</strong> starting score → <strong>{{ "%.1f"|format(plan.target_score) }}%</strong> target. Completed: {{ completed_tasks }}/30</p>
+        <div style="margin:12px 0;">
+            <progress value="{{ completed_tasks }}" max="30" style="width:100%;height:18px;"></progress>
+        </div>
+        {% for task in tasks[:7] %}
+        <div class="task-item {{ 'completed' if task.completed else '' }}" style="padding:10px;margin:6px 0;border-radius:8px;">
+            <strong>Day {{ task.day_number }} — {{ task.title }}</strong>
+            <p>{{ task.description }}</p>
+        </div>
+        {% endfor %}
+        <a class="btn-primary" href="{{ url_for('progress.plan_view') }}">View All 30 Days</a>
+    </div>
+    {% endif %}
+
+    {% if chats %}
+    <div class="card">
+        <h2>💬 Chat Analysis History</h2>
+        <p>{{ chats|length }} chat analysis record(s) saved.</p>
+        {% for item in chats[:5] %}
+        <div style="padding:10px 0;border-bottom:1px solid rgba(128,128,128,.2);">
+            <strong>Chat {{ loop.index }}</strong> — {{ item.created_at.strftime('%d %b %Y, %I:%M %p') if item.created_at else '' }}<br>
+            Messages: {{ item.total_messages or 0 }} | Communication: {{ "%.0f"|format(item.communication_score or 0) }}% | Emotional: {{ "%.0f"|format(item.emotional_score or 0) }}% | Trust: {{ "%.0f"|format(item.trust_score or 0) }}%
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Feature Navigation -->
+    <div class="features-grid">
+
+        <!-- Personality -->
+        <div class="feature-card">
+            <div class="icon">🧠</div>
+
+            <h3>Personality</h3>
+
+            <p>
+                Discover your communication,
+                emotional and relationship personality.
+            </p>
+
+            <a
+                class="btn-primary"
+                href="{{ url_for('personality.questionnaire') }}"
+            >
+                Take Personality Test
+            </a>
+        </div>
+
+
+        <!-- Compatibility -->
+        <div class="feature-card">
+
+            <div class="icon">❤️</div>
+
+            <h3>Compatibility</h3>
+
+            <p>
+                Compare relationship traits and
+                calculate your compatibility score.
+            </p>
+
+            <a
+                class="btn-primary"
+                href="{{ url_for('compatibility.compatibility_test') }}"
+            >
+                Start Compatibility Test
+            </a>
+
+        </div>
+
+
+        <!-- Chat AI -->
+        <div class="feature-card">
+
+            <div class="icon">💬</div>
+
+            <h3>Chat AI</h3>
+
+            <p>
+                Upload or paste your conversation
+                and get detailed AI relationship analysis.
+            </p>
+
+            <a
+                class="btn-primary"
+                href="{{ url_for('chat.chat_analysis') }}"
+            >
+                Analyze Chat
+            </a>
+
+        </div>
+
+
+        <!-- AI Coach -->
+        <div class="feature-card">
+
+            <div class="icon">🤖</div>
+
+            <h3>AI Coach</h3>
+
+            <p>
+                Get personalized AI relationship
+                advice and communication guidance.
+            </p>
+
+            <a
+                class="btn-primary"
+                href="{{ url_for('coach.coach_page') }}"
+            >
+                Ask AI Coach
+            </a>
+
+        </div>
+
+
+        <!-- Astrology -->
+        <div class="feature-card">
+
+            <div class="icon">🔮</div>
+
+            <h3>Astrology</h3>
+
+            <p>
+                Generate personal or couple astrology
+                readings using birth information.
+            </p>
+
+            <a
+                class="btn-primary"
+                href="{{ url_for('astrology.astrology_view') }}"
+            >
+                Open Astrology
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

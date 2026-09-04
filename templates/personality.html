@@ -1,0 +1,355 @@
+
+{% extends "base.html" %}
+
+{% block title %}Personality Assessment - HeartAI{% endblock %}
+
+{% block content %}
+
+<div class="personality-container">
+
+    <div class="personality-header">
+        <h1>Personality & Relationship Assessment</h1>
+
+        <p>
+            Answer all 50 questions honestly. Your answers will be used
+            to calculate your personality and relationship profile.
+        </p>
+
+        <div class="progress-wrapper">
+            <div class="progress-bar">
+                <div id="progress" class="progress-fill"></div>
+            </div>
+
+            <span id="progressText">
+                0 / 50 answered
+            </span>
+        </div>
+    </div>
+
+
+    <form method="POST"
+          action="{{ url_for('personality.questionnaire') }}"
+          id="personalityForm">
+
+
+        {% for question in questions %}
+
+        <div class="question-card">
+
+            <div class="question-number">
+                Question {{ loop.index }} / {{ questions|length }}
+            </div>
+
+            <h3>
+                {{ question.text }}
+            </h3>
+
+            <div class="options">
+
+                {% for value, label in options %}
+
+                <label class="option">
+
+                    <input
+                        type="radio"
+                        name="{{ question.id }}"
+                        value="{{ value }}"
+                        required
+                    >
+
+                    <span>
+                        {{ label }}
+                    </span>
+
+                </label>
+
+                {% endfor %}
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+
+        <div class="extra-information">
+
+            <h2>Additional Information</h2>
+
+            <label for="interests">
+                Your Interests
+            </label>
+
+            <textarea
+                id="interests"
+                name="interests"
+                placeholder="Example: gaming, music, cooking, learning, sports..."
+                rows="4"
+            ></textarea>
+
+
+            <label for="lifestyle">
+                Your Lifestyle / Goals
+            </label>
+
+            <textarea
+                id="lifestyle"
+                name="lifestyle"
+                placeholder="Example: career, business, travel, family, personal growth..."
+                rows="4"
+            ></textarea>
+
+        </div>
+
+
+        <button
+            type="submit"
+            class="submit-button"
+            id="submitButton"
+        >
+            Complete Personality Assessment
+        </button>
+
+    </form>
+
+</div>
+
+
+<style>
+
+.personality-container {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 20px;
+}
+
+.personality-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.personality-header h1 {
+    margin-bottom: 10px;
+}
+
+.personality-header p {
+    color: #666;
+    line-height: 1.6;
+}
+
+.progress-wrapper {
+    margin-top: 25px;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 12px;
+    background: #e5e7eb;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    width: 0%;
+    background: #6366f1;
+    transition: width 0.3s ease;
+}
+
+#progressText {
+    display: block;
+    margin-top: 8px;
+    font-weight: 600;
+}
+
+.question-card {
+    background: white;
+    border-radius: 14px;
+    padding: 25px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+.question-number {
+    font-size: 14px;
+    font-weight: 700;
+    color: #6366f1;
+    margin-bottom: 10px;
+}
+
+.question-card h3 {
+    margin-bottom: 20px;
+    line-height: 1.5;
+}
+
+.options {
+    display: grid;
+    gap: 10px;
+}
+
+.option {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 13px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.option:hover {
+    background: #f5f5ff;
+    border-color: #6366f1;
+}
+
+.option input {
+    width: 18px;
+    height: 18px;
+}
+
+.extra-information {
+    background: white;
+    padding: 25px;
+    border-radius: 14px;
+    margin-top: 25px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+.extra-information h2 {
+    margin-bottom: 20px;
+}
+
+.extra-information label {
+    display: block;
+    margin-top: 15px;
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+.extra-information textarea {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    resize: vertical;
+    font-family: inherit;
+}
+
+.submit-button {
+    display: block;
+    width: 100%;
+    margin-top: 30px;
+    padding: 16px;
+    border: none;
+    border-radius: 12px;
+    background: #6366f1;
+    color: white;
+    font-size: 17px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.submit-button:hover {
+    opacity: 0.9;
+}
+
+@media (max-width: 600px) {
+
+    .personality-container {
+        padding: 10px;
+        margin: 20px auto;
+    }
+
+    .question-card {
+        padding: 18px;
+    }
+
+}
+
+</style>
+
+
+<script>
+
+const form = document.getElementById("personalityForm");
+const progress = document.getElementById("progress");
+const progressText = document.getElementById("progressText");
+
+const totalQuestions = {{ questions|length }};
+
+
+function updateProgress() {
+
+    let answered = 0;
+
+    {% for question in questions %}
+
+    if (
+        document.querySelector(
+            'input[name="{{ question.id }}"]:checked'
+        )
+    ) {
+        answered++;
+    }
+
+    {% endfor %}
+
+
+    const percentage =
+        (answered / totalQuestions) * 100;
+
+    progress.style.width =
+        percentage + "%";
+
+    progressText.textContent =
+        answered + " / " +
+        totalQuestions +
+        " answered";
+}
+
+
+form.addEventListener(
+    "change",
+    updateProgress
+);
+
+
+form.addEventListener(
+    "submit",
+    function(event) {
+
+        let answered = 0;
+
+        {% for question in questions %}
+
+        if (
+            document.querySelector(
+                'input[name="{{ question.id }}"]:checked'
+            )
+        ) {
+            answered++;
+        }
+
+        {% endfor %}
+
+
+        if (answered !== totalQuestions) {
+
+            event.preventDefault();
+
+            alert(
+                "Please answer all 50 questions before submitting."
+            );
+
+            return false;
+        }
+
+    }
+);
+
+</script>
+
+{% endblock %}
+

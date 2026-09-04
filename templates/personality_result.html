@@ -1,0 +1,422 @@
+
+{% extends "base.html" %}
+
+{% block title %}Personality Result - HeartAI{% endblock %}
+
+{% block content %}
+
+<div class="result-container">
+
+    <div class="success-message">
+        <h2>Personality assessment completed successfully!</h2>
+    </div>
+
+
+    <div class="result-header">
+
+        <h1>Your Personality Result</h1>
+
+        <p>
+            Your personality and relationship profile based on
+            your questionnaire responses.
+        </p>
+
+    </div>
+
+
+    <div class="overall-card">
+
+        <h2>Overall Personality Score</h2>
+
+        <div class="score-circle">
+
+            <span>
+                {{ "%.1f"|format(overall) }}
+            </span>
+
+            <small>/100</small>
+
+        </div>
+
+        <h3>
+            {{ personality_type }}
+        </h3>
+
+    </div>
+
+
+    <div class="dimensions">
+
+        <div class="dimension-card">
+
+            <h3>Communication</h3>
+
+            <div class="percentage">
+                {{ "%.1f"|format(scores.communication) }}%
+            </div>
+
+            <div class="bar">
+                <div
+                    class="bar-fill"
+                    style="width: {{ scores.communication }}%;"
+                ></div>
+            </div>
+
+            <p>
+                How openly and effectively you communicate with others.
+            </p>
+
+        </div>
+
+
+        <div class="dimension-card">
+
+            <h3>Emotional Openness</h3>
+
+            <div class="percentage">
+                {{ "%.1f"|format(scores.emotional_openness) }}%
+            </div>
+
+            <div class="bar">
+                <div
+                    class="bar-fill"
+                    style="width: {{ scores.emotional_openness }}%;"
+                ></div>
+            </div>
+
+            <p>
+                Your comfort level in expressing emotions and feelings.
+            </p>
+
+        </div>
+
+
+        <div class="dimension-card">
+
+            <h3>Conflict Handling</h3>
+
+            <div class="percentage">
+                {{ "%.1f"|format(scores.conflict_handling) }}%
+            </div>
+
+            <div class="bar">
+                <div
+                    class="bar-fill"
+                    style="width: {{ scores.conflict_handling }}%;"
+                ></div>
+            </div>
+
+            <p>
+                How you normally respond to disagreements and difficult situations.
+            </p>
+
+        </div>
+
+
+        <div class="dimension-card">
+
+            <h3>Trust Level</h3>
+
+            <div class="percentage">
+                {{ "%.1f"|format(scores.trust) }}%
+            </div>
+
+            <div class="bar">
+                <div
+                    class="bar-fill"
+                    style="width: {{ scores.trust }}%;"
+                ></div>
+            </div>
+
+            <p>
+                Your ability to build trust and feel secure in relationships.
+            </p>
+
+        </div>
+
+
+        <div class="dimension-card">
+
+            <h3>Social Preference</h3>
+
+            <div class="percentage">
+                {{ "%.1f"|format(scores.social) }}%
+            </div>
+
+            <div class="bar">
+                <div
+                    class="bar-fill"
+                    style="width: {{ scores.social }}%;"
+                ></div>
+            </div>
+
+            <p>
+                Your preference for social interaction and personal space.
+            </p>
+
+        </div>
+
+
+        <div class="dimension-card">
+
+            <h3>Relationship Expectations</h3>
+
+            <div class="percentage">
+                {{ "%.1f"|format(scores.relationship) }}%
+            </div>
+
+            <div class="bar">
+                <div
+                    class="bar-fill"
+                    style="width: {{ scores.relationship }}%;"
+                ></div>
+            </div>
+
+            <p>
+                Your expectations regarding emotional connection,
+                support, respect and commitment.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="information-card">
+
+        <h2>Interests</h2>
+
+        {% if profile.interests_text %}
+            <p>{{ profile.interests_text }}</p>
+        {% else %}
+            <p>No interests provided.</p>
+        {% endif %}
+
+    </div>
+
+
+    <div class="information-card">
+
+        <h2>Lifestyle / Goals</h2>
+
+        {% if profile.lifestyle_text %}
+            <p>{{ profile.lifestyle_text }}</p>
+        {% else %}
+            <p>No lifestyle information provided.</p>
+        {% endif %}
+
+    </div>
+
+
+    <div class="actions">
+
+        <a
+            href="{{ url_for('personality.questionnaire') }}"
+            class="button primary"
+        >
+            Retake Personality Test
+        </a>
+
+        <a
+            href="{{ url_for('dashboard.index') }}"
+            class="button secondary"
+        >
+            Back to Dashboard
+        </a>
+
+    </div>
+
+
+    <div class="privacy">
+
+        <strong>Privacy & Safety Notice:</strong>
+
+        HeartAI provides AI-based relationship insights using
+        information voluntarily supplied by users. It does not
+        predict the future or guarantee relationship outcomes.
+        Astrology analyses are for entertainment and self-reflection.
+
+    </div>
+
+</div>
+
+
+<style>
+
+.result-container {
+    max-width: 1000px;
+    margin: 40px auto;
+    padding: 20px;
+}
+
+.success-message {
+    text-align: center;
+    padding: 15px;
+    margin-bottom: 25px;
+    border-radius: 10px;
+    background: #ecfdf5;
+    color: #047857;
+}
+
+.result-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.result-header h1 {
+    margin-bottom: 10px;
+}
+
+.result-header p {
+    color: #666;
+}
+
+.overall-card {
+    text-align: center;
+    padding: 35px;
+    background: white;
+    border-radius: 18px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+    margin-bottom: 30px;
+}
+
+.score-circle {
+    width: 150px;
+    height: 150px;
+    margin: 25px auto;
+    border-radius: 50%;
+    border: 10px solid #6366f1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.score-circle span {
+    font-size: 38px;
+    font-weight: 800;
+}
+
+.score-circle small {
+    color: #666;
+}
+
+.overall-card h3 {
+    font-size: 22px;
+    margin-top: 10px;
+}
+
+.dimensions {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+.dimension-card {
+    background: white;
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.07);
+}
+
+.dimension-card h3 {
+    margin-bottom: 10px;
+}
+
+.percentage {
+    font-size: 28px;
+    font-weight: 800;
+    margin-bottom: 12px;
+}
+
+.bar {
+    width: 100%;
+    height: 10px;
+    background: #e5e7eb;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.bar-fill {
+    height: 100%;
+    background: #6366f1;
+    border-radius: 10px;
+}
+
+.dimension-card p {
+    color: #666;
+    line-height: 1.5;
+    margin-top: 12px;
+}
+
+.information-card {
+    background: white;
+    padding: 25px;
+    margin-top: 20px;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.07);
+}
+
+.information-card h2 {
+    margin-bottom: 12px;
+}
+
+.information-card p {
+    line-height: 1.6;
+    color: #555;
+}
+
+.actions {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-top: 30px;
+}
+
+.button {
+    padding: 14px 22px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: 700;
+}
+
+.primary {
+    background: #6366f1;
+    color: white;
+}
+
+.secondary {
+    background: #e5e7eb;
+    color: #111827;
+}
+
+.privacy {
+    margin-top: 35px;
+    padding: 20px;
+    background: #f9fafb;
+    border-radius: 12px;
+    color: #666;
+    line-height: 1.6;
+    font-size: 14px;
+}
+
+@media (max-width: 700px) {
+
+    .dimensions {
+        grid-template-columns: 1fr;
+    }
+
+    .actions {
+        flex-direction: column;
+    }
+
+    .button {
+        text-align: center;
+    }
+
+}
+
+</style>
+
+{% endblock %}
+
